@@ -9,6 +9,8 @@ export async function GET(request: NextRequest) {
   const pendingAlias = searchParams.get('pendingAlias')
   const pendingExpiry = searchParams.get('pendingExpiry')
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://trimly-bice.vercel.app'
+
   if (token_hash && type) {
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -37,17 +39,23 @@ export async function GET(request: NextRequest) {
           return code
         }
 
-        await serviceSupabase.from('links').insert({
-          code: pendingAlias || generateCode(),
-          destination_url: pendingUrl,
-          user_id: data.session.user.id,
-          expires_at: pendingExpiry || null
-        })
+        const { error: insertError } = await serviceSupabase
+          .from('links')
+          .insert({
+            code: pendingAlias || generateCode(),
+            destination_url: decodeURIComponent(pendingUrl),
+            user_id: data.session.user.id,
+            expires_at: pendingExpiry ? decodeURIComponent(pendingExpiry) : null
+          })
+
+        if (insertError) {
+          console.error('Error saving pending URL:', insertError.message)
+        }
       }
 
-      return NextResponse.redirect(new URL('/dashboard', request.url))
+      return NextResponse.redirect(`${baseUrl}/dashboard`)
     }
   }
 
-  return NextResponse.redirect(new URL('/login?error=confirmation_failed', request.url))
+  return NextResponse.redirect(`${baseUrl}/login?error=confirmation_failed`)
 }
