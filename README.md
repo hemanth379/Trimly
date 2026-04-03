@@ -1,39 +1,66 @@
-# Trimly
-A URL shortener Project
+# Trimly — TRIM. share. TRACK.
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+A production-deployed, full-stack URL shortener. Shorten any link in seconds, 
+track every click, and share anywhere — with custom aliases and link expiry built in.
+
+🔗 **Live:** [trimly-bice.vercel.app](https://trimly-bice.vercel.app)
+
+---
+
+## Features
+
+- **Instant URL shortening** — paste any long URL and get a clean short link immediately
+- **Custom aliases** — choose your own slug instead of a random one
+- **Click analytics** — track how many times each link has been clicked
+- **Link expiry** — set an expiration date after which the link stops redirecting
+- **User authentication** — sign up and manage all your links from a personal dashboard
+- **Fast redirects** — server-side redirects via Next.js for near-instant forwarding
+
+---
+
+## Tech Stack
+
+| Layer | Tech |
+|---|---|
+| **Framework** | Next.js 14 (App Router) |
+| **Language** | TypeScript |
+| **Database & Auth** | Supabase (PostgreSQL + Auth) |
+| **Styling** | Tailwind CSS |
+| **Deployment** | Vercel |
+
+---
 
 ## Getting Started
-
-First, run the development server:
-
 ```bash
+# Clone the repo
+git clone https://github.com/hemanth379/Trimly.git
+cd Trimly
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Add your Supabase URL and anon key
+
+# Run the dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view it locally.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment Variables
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_BASE_URL=https://trimly-bice.vercel.app
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Architecture
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Next.js App Router** handles both the frontend UI and API routes
+- **Supabase** provides PostgreSQL for link storage and built-in auth for user management
+- **Server-side redirects** — when a short URL is visited, Next.js resolves the slug server-side and redirects instantly
+- **Row Level Security (RLS)** on Supabase ensures users can only manage their own links
